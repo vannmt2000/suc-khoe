@@ -85,13 +85,11 @@ function analyzeCycle(){
   const last=ps[ps.length-1];
   const daysSince=Math.floor((new Date(today())-new Date(last.start))/86400000);
 
-  // ===== Tính chu kỳ (khoảng cách giữa các kỳ) =====
   const cycles=[];
   const allCycles=[];
   for(let i=1;i<ps.length;i++){
     const d=Math.round((new Date(ps[i].start)-new Date(ps[i-1].start))/86400000);
     allCycles.push({days:d,from:ps[i-1].start,to:ps[i].start});
-    // Chỉ tính vào avg nếu chu kỳ trong khoảng bình thường 21-35
     if(d>=21&&d<=35){
       cycles.push({days:d,from:ps[i-1].start,to:ps[i].start});
     }
@@ -104,18 +102,15 @@ function analyzeCycle(){
     hasCycleData=true;
     const arr=cycles.map(c=>c.days).sort((a,b)=>a-b);
     avg=Math.round(arr.reduce((s,c)=>s+c,0)/arr.length);
-    // Median — ít bị ảnh hưởng bởi 1 lần trễ/sớm
     const mid=Math.floor(arr.length/2);
     median=arr.length%2===0?Math.round((arr[mid-1]+arr[mid])/2):arr[mid];
     minCycle=arr[0];
     maxCycle=arr[arr.length-1];
   }
 
-  // Dùng median làm chuẩn (không bị kéo lệch)
   const refCycle=hasCycleData?median:28;
   const diff=daysSince-refCycle;
 
-  // ===== Trạng thái =====
   let status='info',text='';
   const nextDate=new Date(new Date(last.start).getTime()+refCycle*86400000);
   const untilNext=Math.ceil((nextDate-new Date())/86400000);
@@ -125,7 +120,6 @@ function analyzeCycle(){
     status='info';
     text='Kỳ đầu tiên đã ghi · Đang ngày '+(daysSince+1)+' của chu kỳ';
   } else if(daysSince < 7){
-    // Đang trong kỳ kinh — chưa đánh giá sớm/trễ
     status='info';
     text='🩸 Đang trong kỳ kinh · Ngày '+(daysSince+1)+' của kỳ';
   } else if(daysSince>refCycle+35){
@@ -142,10 +136,8 @@ function analyzeCycle(){
     text='Chu kỳ đều ('+refCycle+' ngày) · Ngày '+(daysSince+1);
   }
 
-  // ===== Cảnh báo bất thường =====
   const warnings=[];
 
-  // Kỳ dài > 7 ngày hoặc < 2 ngày
   ps.forEach(p=>{
     if(p.end){
       const len=Math.round((new Date(p.end)-new Date(p.start))/86400000)+1;
@@ -155,7 +147,6 @@ function analyzeCycle(){
     }
   });
 
-  // Chu kỳ < 21 ngày (đa kinh) hoặc > 35 ngày (thiểu kinh)
   allCycles.forEach(c=>{
     const fromLabel=new Date(c.from+'T00:00:00').toLocaleDateString('vi-VN');
     const toLabel=new Date(c.to+'T00:00:00').toLocaleDateString('vi-VN');
@@ -163,7 +154,6 @@ function analyzeCycle(){
     else if(c.days>35)warnings.push({msg:'Chu kỳ '+fromLabel+' → '+toLabel+' dài '+c.days+' ngày (hơn 35)',level:'warn'});
   });
 
-  // Kỳ cũ chưa kết thúc > 10 ngày
   ps.forEach(p=>{
     if(!p.end){
       const len=Math.round((new Date(today())-new Date(p.start))/86400000);
@@ -179,7 +169,6 @@ function analyzeCycle(){
 function isInPeriod(dateStr){
   return data.periods.some(p=>{
     if(!p.end){
-      // Không có ngày kết thúc → giả định kéo dài 7 ngày (chuẩn trung bình)
       const endDate=new Date(new Date(p.start).getTime()+7*86400000);
       const endStr=today(endDate);
       return dateStr>=p.start && dateStr<=endStr;
@@ -367,7 +356,8 @@ function renderKnowledge(){
       html += '<tr'+(isUserRow?' class="user-in-row"':'')+'>';
       row.values.forEach((val, ci) => {
         const isFirst = (ci === 0);
-        const colorStyle = isFirst && row.color ? ' style="color:'+row.color+'"' : '';
+        // ĐÃ SỬA LỖI ĐÈ MÀU: Thêm !isUserRow
+        const colorStyle = (isFirst && row.color && !isUserRow) ? ' style="color:'+row.color+'"' : '';
         html += '<td'+colorStyle+'>'+esc(val);
         if(isUserRow && ci === 0) html += ' <span class="user-badge">Bạn ở đây</span>';
         html += '</td>';
@@ -553,10 +543,10 @@ function renderHealth(){
     html+='</div>';
   }
 
-  html+='<div class="card"><h2><span class="title">📉 BMR/TDEE theo thời gian</span></h2><div class="chart-toolbar" id="tbBmr"><button data-r="7" class="active">7 ngày</button><button data-r="30">30 ngày</button><button data-r="90">3 tháng</button><button data-r="365">1 năm</button></div><div class="chart-wrap" id="chartBmr"></div></div>';
+  html+='<div class="card"><h2><span class="title">📉 BMR/TDEE theo thời gian</span></h2><div class="chart-toolbar" id="tbBmr"><button data-r="7">7 ngày</button><button data-r="30" class="active">30 ngày</button><button data-r="90">3 tháng</button><button data-r="365">1 năm</button></div><div class="chart-wrap" id="chartBmr"></div></div>';
 
   if(f.bp){
-    html+='<div class="card"><h2><span class="title">🩸 Huyết áp theo thời gian</span></h2><div class="chart-toolbar" id="tbBp"><button data-r="7" class="active">7 ngày</button><button data-r="30">30 ngày</button><button data-r="90">3 tháng</button></div><div class="chart-wrap" id="chartBp"></div></div>';
+    html+='<div class="card"><h2><span class="title">🩸 Huyết áp theo thời gian</span></h2><div class="chart-toolbar" id="tbBp"><button data-r="7">7 ngày</button><button data-r="30" class="active">30 ngày</button><button data-r="90">3 tháng</button></div><div class="chart-wrap" id="chartBp"></div></div>';
     html+='<div class="card"><h2><span class="title">📋 Lịch sử đo huyết áp</span></h2>';
     const bpH=[];
     Object.keys(data.days).sort((a,b)=>b.localeCompare(a)).forEach(dt=>{const day=data.days[dt];if(day.bps&&day.bps.length)day.bps.forEach(bp=>bpH.push({date:dt,...bp}));});
@@ -565,7 +555,7 @@ function renderHealth(){
     html+='</div>';
   }
   if(f.glucose){
-    html+='<div class="card"><h2><span class="title">🩸 Đường huyết theo thời gian</span></h2><div class="chart-toolbar" id="tbGlu"><button data-r="7" class="active">7 ngày</button><button data-r="30">30 ngày</button><button data-r="90">3 tháng</button></div><div class="chart-wrap" id="chartGlu"></div></div>';
+    html+='<div class="card"><h2><span class="title">🩸 Đường huyết theo thời gian</span></h2><div class="chart-toolbar" id="tbGlu"><button data-r="7">7 ngày</button><button data-r="30" class="active">30 ngày</button><button data-r="90">3 tháng</button></div><div class="chart-wrap" id="chartGlu"></div></div>';
     html+='<div class="card"><h2><span class="title">📋 Lịch sử đo đường huyết</span></h2>';
     const gluH=[];
     Object.keys(data.days).sort((a,b)=>b.localeCompare(a)).forEach(dt=>{const day=data.days[dt];if(day.glucose&&day.glucose.length)day.glucose.forEach(g=>gluH.push({date:dt,...g}));});
@@ -636,9 +626,9 @@ function renderProgress(){
   const lost=startW-curW,need=startW-targetW;
   const pctW=need>0?Math.max(0,Math.min(100,lost/need*100)):0;
   let html='<div class="card"><h2><span class="title">🎯 Tiến độ giảm cân</span></h2><div class="stat-grid"><div class="stat"><div class="stat-v">'+curW+'</div><div class="stat-l">Hiện tại (kg)</div></div><div class="stat"><div class="stat-v" style="color:'+(lost>0?'#48bb78':'#e53e3e')+'">'+(lost>0?'-':'')+Math.abs(lost).toFixed(1)+'</div><div class="stat-l">Đã giảm (kg)</div></div><div class="stat"><div class="stat-v">'+targetW+'</div><div class="stat-l">Mục tiêu (kg)</div></div><div class="stat"><div class="stat-v">'+Math.max(0,curW-targetW).toFixed(1)+'</div><div class="stat-l">Còn lại (kg)</div></div></div><div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:12px;color:#718096"><span>Tiến độ</span><span>'+pctW.toFixed(0)+'%</span></div><div class="pbar"><div class="pfill" style="width:'+pctW+'%"></div></div></div></div>';
-  html+='<div class="card"><h2><span class="title">⚖️ Xu hướng cân nặng</span></h2><div class="chart-toolbar" id="tbWeight"><button data-r="7" class="active">7 ngày</button><button data-r="30">30 ngày</button><button data-r="90">3 tháng</button><button data-r="365">1 năm</button></div><div class="chart-wrap" id="chartWeight"></div></div>';
-  html+='<div class="card"><h2><span class="title">📈 Calo nạp</span></h2><div class="chart-toolbar" id="tbCal"><button data-r="7" class="active">7 ngày</button><button data-r="30">30 ngày</button><button data-r="90">3 tháng</button></div><div class="chart-wrap" id="chartCal"></div></div>';
-  html+='<div class="card"><h2><span class="title">👟 Bước chân</span></h2><div class="chart-toolbar" id="tbSteps"><button data-r="7" class="active">7 ngày</button><button data-r="30">30 ngày</button><button data-r="90">3 tháng</button></div><div class="chart-wrap" id="chartSteps"></div></div>';
+  html+='<div class="card"><h2><span class="title">⚖️ Xu hướng cân nặng</span></h2><div class="chart-toolbar" id="tbWeight"><button data-r="7">7 ngày</button><button data-r="30" class="active">30 ngày</button><button data-r="90">3 tháng</button><button data-r="365">1 năm</button></div><div class="chart-wrap" id="chartWeight"></div></div>';
+  html+='<div class="card"><h2><span class="title">📈 Calo nạp</span></h2><div class="chart-toolbar" id="tbCal"><button data-r="7">7 ngày</button><button data-r="30" class="active">30 ngày</button><button data-r="90">3 tháng</button></div><div class="chart-wrap" id="chartCal"></div></div>';
+  html+='<div class="card"><h2><span class="title">👟 Bước chân</span></h2><div class="chart-toolbar" id="tbSteps"><button data-r="7">7 ngày</button><button data-r="30" class="active">30 ngày</button><button data-r="90">3 tháng</button></div><div class="chart-wrap" id="chartSteps"></div></div>';
   return html;
 }
 
@@ -648,7 +638,7 @@ function renderCharts(){
   else if(currentTab==='progress'){renderWeightChart();renderCalChart();renderStepsChart();}
 }
 function filterByDays(arr,dateKey,days){const cutoff=new Date();cutoff.setDate(cutoff.getDate()-days);const cutoffStr=today(cutoff);return arr.filter(x=>x[dateKey]>=cutoffStr);}
-let bmrRange=7;
+let bmrRange=30;
 function renderBmrChart(){
   const wrap=document.getElementById('chartBmr');if(!wrap)return;
   const cutoff=new Date();cutoff.setDate(cutoff.getDate()-bmrRange);const cutoffStr=today(cutoff);
@@ -658,7 +648,7 @@ function renderBmrChart(){
   const ctx=wrap.querySelector('canvas').getContext('2d');
   chartInstances.bmr=new Chart(ctx,{type:'line',data:{labels:hist.map(h=>fmtDate(h.date)),datasets:[{label:'BMR',data:hist.map(h=>h.bmr),borderColor:'#f6ad55',backgroundColor:'rgba(246,173,85,.1)',tension:0.3,pointRadius:4,pointHoverRadius:7,fill:true,borderWidth:2},{label:'TDEE',data:hist.map(h=>h.tdee),borderColor:'#667eea',backgroundColor:'rgba(102,126,234,.1)',tension:0.3,pointRadius:4,pointHoverRadius:7,fill:true,borderWidth:2}]},options:chartOpts('kcal')});
 }
-let bpRange=7;
+let bpRange=30;
 function renderBpChart(){
   const wrap=document.getElementById('chartBp');if(!wrap)return;
   const entries=[];
@@ -672,7 +662,7 @@ function renderBpChart(){
   const diaColors=filtered.map((x,i)=>{if(i===0)return '#718096';const prev=filtered[i-1].dia;if(x.dia<prev)return '#48bb78';if(x.dia>prev)return '#e53e3e';return '#ecc94b';});
   chartInstances.bp=new Chart(ctx,{type:'line',data:{labels:filtered.map(x=>fmtDate(x.date)+(x.time?' '+x.time:'')),datasets:[{label:'Tâm thu',data:filtered.map(x=>x.sys),borderColor:'#667eea',backgroundColor:'rgba(102,126,234,.1)',tension:0.2,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:sysColors,fill:false,borderWidth:2},{label:'Tâm trương',data:filtered.map(x=>x.dia),borderColor:'#f6ad55',backgroundColor:'rgba(246,173,85,.1)',tension:0.2,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:diaColors,fill:false,borderWidth:2}]},options:chartOpts('mmHg')});
 }
-let gluRange=7;
+let gluRange=30;
 function renderGluChart(){
   const wrap=document.getElementById('chartGlu');if(!wrap)return;
   const entries=[];
@@ -696,7 +686,7 @@ function renderWeightChart(){
   const colors=filtered.map((x,i)=>{if(i===0)return '#718096';const delta=x.weight-filtered[i-1].weight;if(Math.abs(delta)<0.1)return '#ecc94b';return delta<0?'#48bb78':'#e53e3e';});
   chartInstances.weight=new Chart(ctx,{type:'line',data:{labels:filtered.map(w=>fmtDate(w.date)),datasets:[{label:'Cân nặng',data:filtered.map(w=>w.weight),borderColor:'#dd6b20',backgroundColor:'rgba(221,107,32,.1)',tension:0.3,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:colors,fill:true,borderWidth:2}]},options:chartOpts('kg')});
 }
-let calRange=7;
+let calRange=30;
 function renderCalChart(){
   const wrap=document.getElementById('chartCal');if(!wrap)return;
   const days=[];
@@ -707,7 +697,7 @@ function renderCalChart(){
   const tgt=getTargetCalories();
   chartInstances.cal=new Chart(ctx,{type:'line',data:{labels:days.map(x=>fmtDate(x.date)),datasets:[{label:'Calo nạp',data:days.map(x=>x.intake),borderColor:'#667eea',backgroundColor:'rgba(102,126,234,.1)',tension:0.3,pointRadius:4,fill:true,borderWidth:2},{label:'Target',data:days.map(()=>tgt),borderColor:'#48bb78',borderDash:[5,5],pointRadius:0,borderWidth:1.5,fill:false}]},options:chartOpts('kcal')});
 }
-let stepsRange=7;
+let stepsRange=30;
 function renderStepsChart(){
   const wrap=document.getElementById('chartSteps');if(!wrap)return;
   const days=[];
@@ -944,7 +934,6 @@ function openPeriod(){
   const ps=[...data.periods].sort((a,b)=>b.start.localeCompare(a.start));
   let html='<div class="mc"><div class="mh"><h3>🩸 Ghi kỳ kinh</h3><button class="close" onclick="closeModal()">×</button></div>';
 
-  // Danh sách kỳ đã ghi
   if(ps.length){
     html+='<div class="section-title">Các kỳ đã ghi ('+ps.length+')</div>';
     ps.forEach((p,idx)=>{
@@ -964,12 +953,10 @@ function openPeriod(){
     html+='<div class="section-title">Thêm kỳ mới</div>';
   }
 
-  // Nút bắt đầu kỳ hôm nay
   if(!todayInP){
     html+='<button class="warn" style="width:100%;margin-bottom:10px" onclick="startPeriodToday()">🩸 Bắt đầu kỳ hôm nay</button>';
   }
 
-  // Form nhập thủ công
   html+='<label class="flabel">Ngày bắt đầu</label><input type="date" id="pStart" value="'+today()+'">'+
     '<label class="flabel">Ngày kết thúc (nếu đã xong)</label><input type="date" id="pEnd">'+
     '<label class="flabel">Ghi chú</label><input type="text" id="pNote" placeholder="VD: đau bụng, ra nhiều">'+
@@ -978,11 +965,9 @@ function openPeriod(){
 }
 
 function editPeriod(idx){
-  // Sắp xếp giảm dần giống lúc render
   const ps=[...data.periods].sort((a,b)=>b.start.localeCompare(a.start));
   const p=ps[idx];
   if(!p)return;
-  // Tìm index thực trong data.periods
   const realIdx=data.periods.findIndex(x=>x.start===p.start&&x.end===p.end);
   if(realIdx<0)return;
   window._editPeriodIdx=realIdx;
@@ -1006,7 +991,6 @@ function saveEditPeriod(){
 }
 
 function deletePeriod(idx){
-  // Sắp xếp giảm dần giống lúc render
   const ps=[...data.periods].sort((a,b)=>b.start.localeCompare(a.start));
   const p=ps[idx];
   if(!p)return;

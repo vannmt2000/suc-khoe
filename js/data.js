@@ -897,28 +897,66 @@ function glucoseRate(value, moment, unit){
 
 // ========== XÉT NGHIỆM ==========
 const LAB_TESTS_REF=[
+  // ===== TIỂU ĐƯỜNG =====
   {name:'HbA1c',unit:'%',min:4.0,max:5.6,warnMax:6.4,dangerMax:7.0,cat:'Tiểu đường',higherBetter:false},
   {name:'Glucose đói',unit:'mmol/L',min:3.9,max:5.5,warnMax:6.9,dangerMax:7.0,cat:'Tiểu đường',higherBetter:false},
   {name:'Insulin',unit:'μU/mL',min:2.6,max:24.9,cat:'Tiểu đường',higherBetter:false},
+  
+  // ===== MỠ MÁU =====
   {name:'Cholesterol toàn phần',unit:'mmol/L',min:3.6,max:5.2,warnMax:6.2,cat:'Mỡ máu',higherBetter:false},
   {name:'HDL (tốt)',unit:'mmol/L',min:1.0,max:null,cat:'Mỡ máu',higherBetter:true},
   {name:'LDL (xấu)',unit:'mmol/L',min:null,max:3.4,warnMax:4.1,cat:'Mỡ máu',higherBetter:false},
   {name:'Triglyceride',unit:'mmol/L',min:null,max:1.7,warnMax:2.3,cat:'Mỡ máu',higherBetter:false},
+  
+  // ===== GAN =====
   {name:'AST (SGOT)',unit:'U/L',min:5,max:40,cat:'Gan',higherBetter:false},
   {name:'ALT (SGPT)',unit:'U/L',min:7,max:56,cat:'Gan',higherBetter:false},
   {name:'GGT',unit:'U/L',min:9,max:48,cat:'Gan',higherBetter:false},
+  {name:'Bilirubin Total',unit:'µmol/L',min:5.1,max:20.5,cat:'Gan',higherBetter:false},
+  {name:'Bilirubin Direct',unit:'µmol/L',min:0,max:8.6,cat:'Gan',higherBetter:false},
+  {name:'Bilirubin Indirect',unit:'µmol/L',min:3.4,max:17.1,cat:'Gan',higherBetter:false},
+  {name:'Albumin',unit:'g/L',min:35,max:52,cat:'Gan',higherBetter:true},
+  
+  // ===== THẬN =====
   {name:'Creatinine',unit:'μmol/L',min:44,max:106,cat:'Thận',higherBetter:false},
   {name:'Ure',unit:'mmol/L',min:2.5,max:7.5,cat:'Thận',higherBetter:false},
   {name:'eGFR',unit:'mL/min',min:90,max:null,cat:'Thận',higherBetter:true},
+  {name:'Micro Albumin (niệu)',unit:'mg/L',min:null,max:20,cat:'Thận',higherBetter:false},
+  {name:'Creatinine (niệu)',unit:'g/L',min:0.28,max:2.17,cat:'Thận',higherBetter:null},
+  {name:'Tỷ lệ ALB/CRE (niệu)',unit:'mg/g',min:null,max:30,cat:'Thận',higherBetter:false},
+  
+  // ===== TUYẾN GIÁP =====
+  {name:'TSH',unit:'mIU/L',min:0.4,max:4.0,cat:'Tuyến giáp',higherBetter:null},
+  {name:'FT4',unit:'ng/dL',min:0.93,max:1.71,cat:'Tuyến giáp',higherBetter:null},
+  {name:'FT3',unit:'pg/mL',min:1.71,max:3.71,cat:'Tuyến giáp',higherBetter:null},
+  
+  // ===== VIÊM GAN =====
+  {name:'Anti-HBs',unit:'IU/L',min:10,max:null,cat:'Viêm gan',higherBetter:true},
+  
+  // ===== CÔNG THỨC MÁU =====
+  {name:'Hemoglobin',unit:'g/dL',min:12,max:16,cat:'Công thức máu',higherBetter:null},
+  {name:'Hồng cầu (RBC)',unit:'T/L',min:4.0,max:5.4,cat:'Công thức máu',higherBetter:null},
+  {name:'Bạch cầu (WBC)',unit:'G/L',min:4.0,max:10.0,cat:'Công thức máu',higherBetter:null},
+  {name:'Tiểu cầu (PLT)',unit:'G/L',min:150,max:400,cat:'Công thức máu',higherBetter:null},
+  {name:'Neutrophil (NEU)',unit:'G/L',min:2.0,max:7.0,cat:'Công thức máu',higherBetter:null},
+  {name:'Lymphocyte (LYM)',unit:'G/L',min:1.0,max:4.0,cat:'Công thức máu',higherBetter:null},
+  {name:'Monocyte (MONO)',unit:'G/L',min:0.1,max:1.0,cat:'Công thức máu',higherBetter:null},
+  {name:'Eosinophil (EOS)',unit:'G/L',min:0,max:0.5,cat:'Công thức máu',higherBetter:null},
+  {name:'Basophil (BASO)',unit:'G/L',min:0,max:0.2,cat:'Công thức máu',higherBetter:null},
+  {name:'Hematocrit (HCT)',unit:'L/L',min:0.35,max:0.45,cat:'Công thức máu',higherBetter:null},
+  {name:'MCV',unit:'fL',min:80,max:100,cat:'Công thức máu',higherBetter:null},
+  {name:'MCH',unit:'pg',min:26,max:35,cat:'Công thức máu',higherBetter:null},
+  {name:'MCHC',unit:'g/L',min:310,max:380,cat:'Công thức máu',higherBetter:null},
+  {name:'RDW',unit:'%',min:10,max:15,cat:'Công thức máu',higherBetter:null},
+  {name:'MPV',unit:'fL',min:4,max:13,cat:'Công thức máu',higherBetter:null},
+  {name:'PCT',unit:'%',min:0.1,max:0.4,cat:'Công thức máu',higherBetter:null},
+  {name:'PDW',unit:'%',min:8,max:24,cat:'Công thức máu',higherBetter:null},
+
+  // ===== KHÁC =====
   {name:'Acid uric',unit:'μmol/L',min:140,max:360,warnMax:420,cat:'Khác',higherBetter:false},
   {name:'Sắt',unit:'μmol/L',min:9,max:30,cat:'Khác',higherBetter:null},
   {name:'Ferritin',unit:'ng/mL',min:13,max:150,cat:'Khác',higherBetter:null},
-  {name:'Vitamin D',unit:'ng/mL',min:30,max:100,cat:'Khác',higherBetter:true},
-  {name:'TSH',unit:'mIU/L',min:0.4,max:4.0,cat:'Khác',higherBetter:null},
-  {name:'Hemoglobin',unit:'g/dL',min:12,max:16,cat:'Khác',higherBetter:null},
-  {name:'Hồng cầu (RBC)',unit:'T/L',min:4.0,max:5.4,cat:'Khác',higherBetter:null},
-  {name:'Bạch cầu (WBC)',unit:'G/L',min:4.0,max:10.0,cat:'Khác',higherBetter:null},
-  {name:'Tiểu cầu (PLT)',unit:'G/L',min:150,max:400,cat:'Khác',higherBetter:null}
+  {name:'Vitamin D',unit:'ng/mL',min:30,max:100,cat:'Khác',higherBetter:true}
 ];
 
 function labRate(value, ref){
@@ -932,11 +970,7 @@ function labRate(value, ref){
   return ['Bình thường','good'];
 }
 
-
-
 // ========== BẢNG THAM KHẢO SỨC KHỎE ==========
-// Nguồn: WHO Asia-Pacific, AHA 2020, ADA 2024, ACE, Tanita
-
 const HEALTH_REFS = {
   bmi: {
     name: 'BMI',
@@ -982,7 +1016,6 @@ const HEALTH_REFS = {
   }
 };
 
-// Các ngưỡng theo tuổi cho các chỉ số khác
 const AGE_RANGES = {
   bodyFatMale: [
     {ageMax:39, low:8, normal:19, high:24, vhigh:999, source:'ACE'},
@@ -1006,7 +1039,6 @@ const AGE_RANGES = {
   ]
 };
 
-// Placeholder mẫu cho người khỏe mạnh (1m70, 65kg, 30 tuổi)
 const HEALTHY_PLACEHOLDERS = {
   height: '170',
   weight: '65',
@@ -1022,7 +1054,6 @@ const HEALTHY_PLACEHOLDERS = {
   visceralFat: '5'
 };
 
-// Hàm đánh giá chỉ số theo bảng tham khảo
 function rateByRef(value, refKey) {
   const ref = HEALTH_REFS[refKey];
   if(!ref) return null;
@@ -1058,7 +1089,6 @@ function getAgeFromBirthYear(by){
   return new Date().getFullYear() - by;
 }
 
-// Đánh giá sức khỏe tổng quát
 function assessHealth(dataObj){
   const s = dataObj.settings;
   const age = getAgeFromBirthYear(s.birthYear);
@@ -1069,7 +1099,6 @@ function assessHealth(dataObj){
 
   const results = [];
 
-  // BMI
   if(latest && latest.weight && s.height){
     const h = s.height/100;
     const bmi = +(latest.weight/(h*h)).toFixed(1);
@@ -1077,19 +1106,16 @@ function assessHealth(dataObj){
     results.push({key:'bmi', label:'BMI', value:bmi, unit:'', ...r});
   }
 
-  // Mỡ cơ thể
   if(latest && latest.bodyFatPct){
     const r = rateBodyFat(latest.bodyFatPct, gender, age);
     results.push({key:'bodyFat', label:'Mỡ cơ thể', value:latest.bodyFatPct, unit:'%', ...r});
   }
 
-  // Cơ
   if(latest && latest.musclePct){
     const r = rateMuscle(latest.musclePct, gender, age);
     results.push({key:'muscle', label:'Khối cơ', value:latest.musclePct, unit:'%', ...r});
   }
 
-  // Mỡ nội tạng
   if(latest && latest.visceralFat){
     const v = latest.visceralFat;
     let r;
@@ -1099,7 +1125,6 @@ function assessHealth(dataObj){
     results.push({key:'visceral', label:'Mỡ nội tạng', value:v, unit:'', ...r});
   }
 
-  // HA - lấy lần đo mới nhất
   if(dataObj.days){
     const bpsAll = [];
     Object.keys(dataObj.days).forEach(dt => {
@@ -1116,7 +1141,6 @@ function assessHealth(dataObj){
     }
   }
 
-  // Đường huyết - lấy lần đo lúc đói mới nhất
   if(dataObj.days){
     const gluAll = [];
     Object.keys(dataObj.days).forEach(dt => {
@@ -1137,14 +1161,6 @@ function assessHealth(dataObj){
 
 
 // ========== BẢNG THAM KHẢO CHI TIẾT ==========
-// Cấu trúc: mỗi bảng có id, title, icon, desc, source, columns, rows
-// match: hàm trả về chỉ số dòng (0-based) mà user đang ở, hoặc -1 nếu không khớp
-
-function getAgeFromBirthYear(by){
-  if(!by) return null;
-  return new Date().getFullYear() - by;
-}
-
 function getLatestWeightSimple(){
   if(!data.weights || !data.weights.length) return null;
   return [...data.weights].sort((a,b)=>b.date.localeCompare(a.date))[0];
@@ -1168,6 +1184,30 @@ function getLatestGlucoseSimple(){
   Object.keys(data.days).forEach(dt => {
     const day = data.days[dt];
     if(day.glucose && day.glucose.length) day.glucose.forEach(g => arr.push({date:dt, ...g}));
+  });
+  if(!arr.length) return null;
+  arr.sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
+  return arr[arr.length-1];
+}
+
+function getLatestLabValue(name){
+  if(!data.labTests || !data.labTests.length) return null;
+  const arr = data.labTests.filter(t => t.name === name);
+  if(!arr.length) return null;
+  arr.sort((a,b) => b.date.localeCompare(a.date));
+  return arr[0];
+}
+
+function getLatestGlucoseByMoment(momentName) {
+  if(!data.days) return null;
+  const arr = [];
+  Object.keys(data.days).forEach(dt => {
+    const day = data.days[dt];
+    if(day.glucose && day.glucose.length) {
+      day.glucose.forEach(g => {
+        if(g.moment === momentName) arr.push({date:dt, ...g});
+      });
+    }
   });
   if(!arr.length) return null;
   arr.sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
@@ -1242,12 +1282,12 @@ const REF_TABLES = [
     }
   },
 
-  // ===== 3. Nhịp tim nghỉ theo tuổi =====
+  // ===== 3. Nhịp tim nghỉ =====
   {
     id: 'hr',
     title: 'Nhịp tim nghỉ (theo tuổi)',
     icon: '❤️',
-    desc: 'Số lần tim đập/phút khi nghỉ ngơi hoàn toàn. Cách đo: ngồi nghỉ 5-10 phút, đếm mạch trong 30 giây × 2.',
+    desc: 'Số lần tim đập/phút khi nghỉ ngơi. Cách đo: ngồi nghỉ 5-10 phút, đếm mạch trong 30 giây × 2.',
     source: 'American Heart Association',
     columns: ['Tuổi', 'Nhịp tim nghỉ tốt (bpm)', 'Ghi chú'],
     rows: [
@@ -1261,9 +1301,7 @@ const REF_TABLES = [
     match: function(){
       const age = getAgeFromBirthYear(data.settings && data.settings.birthYear);
       const bp = getLatestBpSimple();
-      // CHỈ highlight nếu CÓ đo pulse
-      if(!age || !bp || !bp.pulse) return -1;
-      // Xác định nhóm tuổi
+      if(!age || !bp || !bp.pulse) return -1; 
       let ageIdx;
       if(age <= 25) ageIdx = 0;
       else if(age <= 35) ageIdx = 1;
@@ -1271,33 +1309,16 @@ const REF_TABLES = [
       else if(age <= 55) ageIdx = 3;
       else if(age <= 65) ageIdx = 4;
       else ageIdx = 5;
-      // Kiểm tra pulse có nằm trong ngưỡng khỏe không
-      const ranges = [[56,65],[55,64],[54,63],[53,62],[52,61],[50,60]];
-      const [min,max] = ranges[ageIdx];
-      if(bp.pulse >= min && bp.pulse <= max) return ageIdx;
-      return -1;  // Pulse ngoài ngưỡng → không highlight
+      return ageIdx;
     },
     userValue: function(){
       const bp = getLatestBpSimple();
       if(!bp || !bp.pulse) return null;
-      const age = getAgeFromBirthYear(data.settings && data.settings.birthYear);
-      if(!age) return bp.pulse + ' bpm';
-      let ageIdx;
-      if(age <= 25) ageIdx = 0;
-      else if(age <= 35) ageIdx = 1;
-      else if(age <= 45) ageIdx = 2;
-      else if(age <= 55) ageIdx = 3;
-      else if(age <= 65) ageIdx = 4;
-      else ageIdx = 5;
-      const ranges = [[56,65],[55,64],[54,63],[53,62],[52,61],[50,60]];
-      const [min,max] = ranges[ageIdx];
-      if(bp.pulse < min) return bp.pulse + ' bpm (thấp hơn)';
-      if(bp.pulse > max) return bp.pulse + ' bpm (cao hơn)';
-      return bp.pulse + ' bpm ✓';
+      return bp.pulse + ' bpm';
     }
   },
 
-  // ===== 4. Mỡ cơ thể (theo giới + tuổi) =====
+  // ===== 4. Mỡ cơ thể =====
   {
     id: 'bodyfat',
     title: 'Tỷ lệ mỡ cơ thể (theo giới và tuổi)',
@@ -1319,7 +1340,6 @@ const REF_TABLES = [
       const gender = data.settings && data.settings.gender;
       const age = getAgeFromBirthYear(data.settings && data.settings.birthYear);
       if(!gender || !age) return -1;
-      const pct = w.bodyFatPct;
       if(gender === 'male'){
         if(age <= 39) return 0;
         if(age <= 59) return 1;
@@ -1336,75 +1356,12 @@ const REF_TABLES = [
     }
   },
 
-  // ===== 5. Khối cơ =====
-  {
-    id: 'muscle',
-    title: 'Khối lượng cơ (theo giới và tuổi)',
-    icon: '💪',
-    desc: 'Tỷ lệ khối cơ trong cơ thể. Càng cao càng tốt cho trao đổi chất và sức khỏe.',
-    source: 'InBody / Tanita',
-    columns: ['Giới / Tuổi', 'Thấp', 'Bình thường', 'Tốt'],
-    rows: [
-      {values:['Nam 20-39', '< 33%', '33-39%', '> 39%'], color:'#4299e1'},
-      {values:['Nam 40-59', '< 32%', '32-38%', '> 38%'], color:'#4299e1'},
-      {values:['Nam 60+', '< 30%', '30-36%', '> 36%'], color:'#4299e1'},
-      {values:['Nữ 20-39', '< 24%', '24-30%', '> 30%'], color:'#ed64a6'},
-      {values:['Nữ 40-59', '< 23%', '23-29%', '> 29%'], color:'#ed64a6'},
-      {values:['Nữ 60+', '< 21%', '21-27%', '> 27%'], color:'#ed64a6'}
-    ],
-    match: function(){
-      const w = getLatestWeightSimple();
-      if(!w || !w.musclePct) return -1;
-      const gender = data.settings && data.settings.gender;
-      const age = getAgeFromBirthYear(data.settings && data.settings.birthYear);
-      if(!gender || !age) return -1;
-      if(gender === 'male'){
-        if(age <= 39) return 0;
-        if(age <= 59) return 1;
-        return 2;
-      } else {
-        if(age <= 39) return 3;
-        if(age <= 59) return 4;
-        return 5;
-      }
-    },
-    userValue: function(){
-      const w = getLatestWeightSimple();
-      return w && w.musclePct ? w.musclePct+'%' : null;
-    }
-  },
-
-  // ===== 6. Nước cơ thể =====
-  {
-    id: 'water',
-    title: 'Tỷ lệ nước trong cơ thể',
-    icon: '💧',
-    desc: 'Nước chiếm phần lớn cơ thể. Đo bằng cân BIA. Uống đủ nước giúp chỉ số này ổn định.',
-    source: 'Tanita reference',
-    columns: ['Giới', 'Thấp', 'Bình thường', 'Cao'],
-    rows: [
-      {values:['Nam', '< 50%', '50-65%', '> 65%'], color:'#4299e1'},
-      {values:['Nữ', '< 45%', '45-60%', '> 60%'], color:'#ed64a6'}
-    ],
-    match: function(){
-      const w = getLatestWeightSimple();
-      if(!w || !w.waterPct) return -1;
-      const gender = data.settings && data.settings.gender;
-      if(!gender) return -1;
-      return gender === 'male' ? 0 : 1;
-    },
-    userValue: function(){
-      const w = getLatestWeightSimple();
-      return w && w.waterPct ? w.waterPct+'%' : null;
-    }
-  },
-
-  // ===== 7. Mỡ nội tạng =====
+  // ===== 5. Mỡ nội tạng =====
   {
     id: 'visceral',
     title: 'Mỡ nội tạng',
     icon: '🫀',
-    desc: 'Mỡ bao quanh các cơ quan nội tạng (tim, gan, thận). Cao → nguy cơ tim mạch, tiểu đường. Đo bằng cân điện tử.',
+    desc: 'Mỡ bao quanh các cơ quan nội tạng (tim, gan, thận). Cao → nguy cơ tim mạch, tiểu đường.',
     source: 'Tanita reference range',
     columns: ['Mức', 'Chỉ số', 'Ý nghĩa'],
     rows: [
@@ -1426,7 +1383,7 @@ const REF_TABLES = [
     }
   },
 
-  // ===== 8. Đường huyết =====
+  // ===== 6. Đường huyết =====
   {
     id: 'glucose',
     title: 'Đường huyết',
@@ -1440,22 +1397,183 @@ const REF_TABLES = [
       {values:['HbA1c (%)', '< 5.7', '5.7 - 6.4', '≥ 6.5'], color:'#e53e3e'}
     ],
     match: function(){
-      const g = getLatestGlucoseSimple();
-      if(!g) return -1;
-      if(g.moment === 'đói') return 0;
-      if(g.moment === 'sau ăn 2h') return 1;
+      const gDoi = getLatestGlucoseByMoment('đói');
+      if(gDoi) return 0; 
+      const gSauAn = getLatestGlucoseByMoment('sau ăn 2h');
+      if(gSauAn) return 1;
+      const hba1c = getLatestLabValue('HbA1c');
+      if(hba1c) return 2;
       return -1;
     },
     userValue: function(){
       const g = getLatestGlucoseSimple();
       if(!g) return null;
-      const unit = data.glucoseUnit || 'mmol/L';
-      return g.value + ' ' + unit + ' (' + g.moment + ')';
+      return g.value + ' (' + g.moment + ')';
+    }
+  },
+
+  // ===== 7. MỠ MÁU =====
+  {
+    id: 'lipid',
+    title: 'Mỡ máu (Lipid Panel)',
+    icon: '🧈',
+    desc: 'Đánh giá nguy cơ tim mạch. Nên xét nghiệm lúc đói 8-12 tiếng.',
+    source: 'Bộ Y tế / AHA',
+    columns: ['Chỉ số', 'Bình thường', 'Ranh giới cao', 'Cao (Nguy hiểm)'],
+    rows: [
+      {values:['Cholesterol toàn phần', '< 5.2', '5.2 - 6.2', '≥ 6.2'], color:'#e53e3e'},
+      {values:['LDL (Xấu)', '< 3.4', '3.4 - 4.1', '≥ 4.1'], color:'#e53e3e'},
+      {values:['HDL (Tốt)', '> 1.0 (Nam) / > 1.3 (Nữ)', '0.9 - 1.0', '< 0.9'], color:'#48bb78'},
+      {values:['Triglyceride', '< 1.7', '1.7 - 2.3', '≥ 2.3'], color:'#e53e3e'}
+    ],
+    match: function(){
+      const ldl = getLatestLabValue('LDL (xấu)');
+      if(ldl && +ldl.value >= 4.1) return 1; 
+      const tg = getLatestLabValue('Triglyceride');
+      if(tg && +tg.value >= 2.3) return 3;
+      const tc = getLatestLabValue('Cholesterol toàn phần');
+      if(tc && +tc.value >= 6.2) return 0;
+      const hdl = getLatestLabValue('HDL (tốt)');
+      if(hdl && +hdl.value < 1.0) return 2;
+      return -1;
+    },
+    userValue: function(){
+      const tc = getLatestLabValue('Cholesterol toàn phần');
+      return tc ? 'TC: '+tc.value : null;
+    }
+  },
+
+  // ===== 8. MEN GAN =====
+  {
+    id: 'liver',
+    title: 'Chức năng Gan (Men gan)',
+    icon: '🫀',
+    desc: 'Đánh giá tổn thương tế bào gan. Chỉ số tăng cao gặp trong viêm gan, gan nhiễm mỡ, do rượu bia.',
+    source: 'Bệnh viện Đại học Y Dược',
+    columns: ['Chỉ số', 'Bình thường', 'Cao', 'Rất cao (Nguy hiểm)'],
+    rows: [
+      {values:['AST (SGOT)', '5 - 40', '41 - 100', '> 100'], color:'#e53e3e'},
+      {values:['ALT (SGPT)', '7 - 56', '57 - 100', '> 100'], color:'#e53e3e'},
+      {values:['GGT', '9 - 48', '49 - 150', '> 150'], color:'#e53e3e'}
+    ],
+    match: function(){
+      const ast = getLatestLabValue('AST (SGOT)');
+      const alt = getLatestLabValue('ALT (SGPT)');
+      const ggt = getLatestLabValue('GGT');
+      if(ast && +ast.value > 40) return 0;
+      if(alt && +alt.value > 56) return 1;
+      if(ggt && +ggt.value > 48) return 2;
+      return -1;
+    },
+    userValue: function(){
+      const ast = getLatestLabValue('AST (SGOT)');
+      const alt = getLatestLabValue('ALT (SGPT)');
+      if(ast && alt) return 'AST: '+ast.value+' | ALT: '+alt.value;
+      return null;
+    }
+  },
+
+  // ===== 9. CHỨC NĂNG THẬN =====
+  {
+    id: 'kidney',
+    title: 'Chức năng Thận',
+    icon: '🫘',
+    desc: 'Đánh giá khả năng lọc máu của thận. eGFR càng cao càng tốt.',
+    source: 'KDIGO 2024',
+    columns: ['Chỉ số', 'Bình thường', 'Cảnh báo', 'Nguy hiểm'],
+    rows: [
+      {values:['Creatinine', '44 - 106', '107 - 150', '> 150'], color:'#e53e3e'},
+      {values:['eGFR', '≥ 90', '60 - 89', '< 60'], color:'#48bb78'}
+    ],
+    match: function(){
+      const egfr = getLatestLabValue('eGFR');
+      if(egfr && +egfr.value < 90) return 1;
+      const cre = getLatestLabValue('Creatinine');
+      if(cre && +cre.value > 106) return 0;
+      return -1;
+    },
+    userValue: function(){
+      const egfr = getLatestLabValue('eGFR');
+      return egfr ? 'eGFR: '+egfr.value : null;
+    }
+  },
+
+  // ===== 10. TUYẾN GIÁP =====
+  {
+    id: 'thyroid',
+    title: 'Tuyến giáp (TSH, FT3, FT4)',
+    icon: '🦋',
+    desc: 'Đánh giá hoạt động của tuyến giáp. Ảnh hưởng đến quá trình trao đổi chất.',
+    source: 'Hội Nội tiết Việt Nam',
+    columns: ['Chỉ số', 'Bình thường', 'Thấp', 'Cao'],
+    rows: [
+      {values:['TSH', '0.4 - 4.0', '< 0.4', '> 4.0'], color:'#4299e1'},
+      {values:['FT4', '0.93 - 1.71', '< 0.93', '> 1.71'], color:'#4299e1'}
+    ],
+    match: function(){
+      const tsh = getLatestLabValue('TSH');
+      if(tsh && (+tsh.value > 4.0 || +tsh.value < 0.4)) return 0;
+      return -1;
+    },
+    userValue: function(){
+      const tsh = getLatestLabValue('TSH');
+      return tsh ? 'TSH: '+tsh.value : null;
+    }
+  },
+
+  // ===== 11. CÔNG THỨC MÁU =====
+  {
+    id: 'cbc',
+    title: 'Công thức máu (CBC)',
+    icon: '🩸',
+    desc: 'Kiểm tra các tế bào máu. Phát hiện thiếu máu, nhiễm trùng, rối loạn đông máu.',
+    source: 'WHO',
+    columns: ['Chỉ số', 'Bình thường (Nữ)', 'Thấp', 'Cao'],
+    rows: [
+      {values:['Hồng cầu (RBC)', '4.0 - 5.4', '< 4.0', '> 5.4'], color:'#e53e3e'},
+      {values:['Hemoglobin (HGB)', '12 - 16', '< 12', '> 16'], color:'#e53e3e'},
+      {values:['Bạch cầu (WBC)', '4.0 - 10.0', '< 4.0', '> 10.0'], color:'#e53e3e'},
+      {values:['Tiểu cầu (PLT)', '150 - 400', '< 150', '> 400'], color:'#e53e3e'}
+    ],
+    match: function(){
+      const hgb = getLatestLabValue('Hemoglobin');
+      if(hgb && +hgb.value < 12) return 1;
+      const wbc = getLatestLabValue('Bạch cầu (WBC)');
+      if(wbc && (+wbc.value < 4.0 || +wbc.value > 10.0)) return 2;
+      const plt = getLatestLabValue('Tiểu cầu (PLT)');
+      if(plt && (+plt.value < 150 || +plt.value > 400)) return 3;
+      return -1;
+    },
+    userValue: function(){
+      const hgb = getLatestLabValue('Hemoglobin');
+      return hgb ? 'Hb: '+hgb.value : null;
+    }
+  },
+
+  // ===== 12. VIÊM GAN B =====
+  {
+    id: 'hepatitis_b',
+    title: 'Kháng thể Viêm gan B (Anti-HBs)',
+    icon: '🛡️',
+    desc: 'Kiểm tra xem bạn đã có kháng thể bảo vệ chống lại virus Viêm gan B chưa.',
+    source: 'CDC',
+    columns: ['Kết quả', 'Anti-HBs (IU/L)', 'Ý nghĩa'],
+    rows: [
+      {values:['Âm tính', '< 10', 'Chưa có kháng thể, nên đi tiêm vắc-xin'], color:'#ed8936'},
+      {values:['Dương tính', '≥ 10', 'Đã có kháng thể bảo vệ'], color:'#48bb78'}
+    ],
+    match: function(){
+      const anti = getLatestLabValue('Anti-HBs');
+      if(!anti) return -1;
+      return +anti.value >= 10 ? 1 : 0;
+    },
+    userValue: function(){
+      const anti = getLatestLabValue('Anti-HBs');
+      return anti ? anti.value : null;
     }
   }
 ];
 
-// Helper: lấy bảng theo id
 function getRefTable(id){
   return REF_TABLES.find(t => t.id === id);
 }
