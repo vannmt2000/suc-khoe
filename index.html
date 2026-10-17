@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#667eea">
+<title>Sức Khỏe Của Tôi</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div id="loadingScreen">
+  <div style="text-align:center">
+    <div style="font-size:48px;margin-bottom:12px">💪</div>
+    <div style="color:#718096;font-size:14px">Đang tải...</div>
+  </div>
+</div>
+
+<div id="loginScreen" class="hidden">
+  <div class="login-card">
+    <h1>💪 Sức Khỏe Của Tôi</h1>
+    <div class="sub">Đăng nhập để tiếp tục</div>
+    <form id="loginForm" onsubmit="return handleLogin(event)">
+      <label for="loginUser">Email</label>
+      <input type="email" id="loginUser" placeholder="VD: ten@gmail.com" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required>
+      <label for="loginPass">Mật khẩu</label>
+      <input type="password" id="loginPass" placeholder="Nhập mật khẩu" autocomplete="current-password" required>
+      <div class="login-err" id="loginErr"></div>
+      <button type="submit" id="loginBtn">Đăng nhập</button>
+      <button type="button" class="login-forgot" onclick="showForgotPasswordPopup()">Quên mật khẩu?</button>
+    </form>
+    <div class="login-hint">
+      Chưa có tài khoản?<br>
+      Liên hệ admin để được cấp.
+    </div>
+  </div>
+</div>
+
+<div id="onboardingScreen" class="hidden">
+  <div class="onboarding-card">
+    <div class="ob-progress">
+      <div class="ob-bar" id="obBar"></div>
+    </div>
+    <div id="obContent"></div>
+  </div>
+</div>
+
+<div id="mainApp" class="hidden">
+  <header>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;max-width:640px;margin:0 auto">
+      <div style="flex:1;min-width:0;text-align:left">
+        <h1 style="margin:0;font-size:15px">💪 Sức Khỏe Của Tôi</h1>
+        <p id="hsub" style="margin:2px 0 0;font-size:11px;opacity:.9">Theo dõi ăn uống, vận động & bệnh lý</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div id="userChip"></div>
+        <button id="logoutBtn" onclick="handleLogout()" title="Đăng xuất" style="background:rgba(255,255,255,.2);color:#fff;border:none;padding:5px 10px;border-radius:8px;font-size:11px;cursor:pointer;font-weight:600;white-space:nowrap">Thoát</button>
+      </div>
+    </div>
+  </header>
+  <div class="container" id="app"></div>
+  <nav class="nav">
+    <button data-tab="today" class="active"><span class="ni">📅</span>Hôm nay</button>
+    <button data-tab="health"><span class="ni">🩺</span>Sức khỏe</button>
+    <button data-tab="progress"><span class="ni">📈</span>Tiến độ</button>
+    <button data-tab="knowledge"><span class="ni">📚</span>Kiến thức</button>
+    <button data-tab="settings"><span class="ni">⚙️</span>Cài đặt</button>
+  </nav>
+</div>
+
+<div id="modalRoot"></div>
+<div class="toast" id="toast"></div>
+
+<script src="js/data.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
